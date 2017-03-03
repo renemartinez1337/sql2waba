@@ -1,0 +1,34 @@
+program nombre;
+var
+	tasasimadi,salida: integer;
+	nota: array [1..40] of integer;
+	bolivares : boolean;
+	
+
+function integer suma (x,y : integer)
+begin
+   		
+         bolivares:=x+y;
+         write (bolivares);
+         return bolivares;
+end;
+
+begin
+	
+	read x;
+	read y;
+    suma(123);
+
+    /*algonsioadnasoidna
+
+disaunsiduandasd
+aosdinaod
+
+
+onsaodinaosdi*/
+		
+     		
+
+
+end;
+.
