@@ -106,21 +106,8 @@ action code {:
 /* Simbolos Terminales */
 terminal String ID;
 terminal String NUM;
-terminal BOOLEAN;
-terminal INT;
 terminal TRUE;
 terminal FALSE;
-terminal IF;
-terminal ELSE;
-terminal RETURN;
-terminal VOID;
-terminal MAIN;
-terminal WHILE;
-terminal FOR;
-terminal DO;
-terminal GETS;
-terminal PUTS;
-terminal ASSIGN;
 terminal EQ;
 terminal LE;
 terminal GE;
@@ -129,16 +116,12 @@ terminal GT;
 terminal DIFF;
 terminal AND;
 terminal OR;
-terminal INCREMENT;
 terminal PLUS;
-terminal DECREMENT;
 terminal MINUS;
 terminal TIMES;
 terminal OVER;
 terminal LPAREN;
 terminal RPAREN;
-terminal LBRACKET;
-terminal RBRACKET;
 terminal COLOM;
 terminal SEMI;
 
@@ -148,7 +131,6 @@ non terminal program;
 non terminal NodoBase stmt_seq;
 non terminal NodoBase stmt;
 non terminal NodoBase param_list;
-non terminal NodoBase incre;
 non terminal NodoBase assign_stmt;
 non terminal NodoBase exp_seq;
 non terminal NodoBase exp;
@@ -215,20 +197,67 @@ stmt        ::= select_seq:sseq
 				:}
 ;
 
-assign_stmt ::= ID:variable	ASSIGN exp_seq:ex SEMI  
-					{: 
-						if(debug) System.out.println("\t regla asignacion a un id");
-
-						if(variable!=null)
-							RESULT = new NodoAsignacion((new NodoIdentificador(variable.toString())).getNombre(), ex);
-
-						else{
-							RESULT = null;
-							System.out.println("Ocurrio error en cup # 0001");
+select_seq    ::= select_seq:sseq  select_stmt:select	{: if(debug) System.out.println("\t regla secuencia de select"); 
+						
+						NodoBase hijoActual = ini;
+						if(hijoActual !=null){
+							
+							while(hijoActual.TieneHermano()){
+								hijoActual = hijoActual.getHermanoDerecha();
+							}
+							
+							hijoActual.setHermanoDerecha(select);
+							RESULT=sseq;
 						}
-					:}
-	
+						else{
+							
+							RESULT=select;
+						}
+			:}
+
+            | select_stmt:select	{: 
+            			
+            			if(debug) System.out.println("\t regla secuencia de select"); 
+						RESULT=select;				
+			:}
+
 ;
+
+
+select_stmt        ::= SELECT select_cols:c FROM ID:tabla where:w order_by:o
+				{: 
+					if(debug) 
+						System.out.println("\t regla sentencia"); 
+					
+					RESULT = sseq;
+				:}
+            
+            
+            | error	
+            	{: 
+            		if(debug) 
+            			System.out.println("\t Error en select"); 
+										
+					RESULT=null;
+				:}
+;
+
+where ::=
+        /* empty */
+      | WHERE exp_seq:b {: 
+            		if(debug) 
+            			System.out.println("\t regla where"); 
+										
+					RESULT=null;
+				:}
+      | error {: 
+            		if(debug) 
+            			System.out.println("\t Error en where"); 
+										
+					RESULT=null;
+				:}
+      ;
+
 
 param_list		::= param_list:paramlist COLOM exp_seq:exp
 						{: 
