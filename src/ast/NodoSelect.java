@@ -1,6 +1,6 @@
 package ast;
 
-public class NodoIdentificador extends NodoBase {
+public class NodoSelect extends NodoBase {
 	private String nombre;
 	private String tipo;
 	private NodoBase Argumentos;

@@ -68,8 +68,11 @@ espacio		= [ \t]+
 "where"            {	if(debug) System.out.println("token WHERE");
 			return sf.newSymbol("WHERE",sym.WHERE,yyline);
 			}
-"count"            {	if(debug) System.out.println("token COUNT");
-			return sf.newSymbol("COUNT",sym.COUNT,yyline);
+"join"            {	if(debug) System.out.println("token JOIN");
+			return sf.newSymbol("JOIN",sym.JOIN,yyline);
+			}
+"on"            {	if(debug) System.out.println("token ON");
+			return sf.newSymbol("ON",sym.ON,yyline);
 			}
 "and"               {	if(debug) System.out.println("token AND");
 			return sf.newSymbol("AND",sym.AND,yyline);
@@ -77,17 +80,20 @@ espacio		= [ \t]+
 "or"                {	if(debug) System.out.println("token OR");
 			return sf.newSymbol("OR",sym.OR,yyline);
 			}
-"<"                 {	if(debug) System.out.println("token LT");
-			return sf.newSymbol("LESST",sym.LT,yyline);
+"true"           {	if(debug) System.out.println("token TRUE");
+			return sf.newSymbol("TRUE",sym.TRUE,yyline);
 			}
-">"                 {	if(debug) System.out.println("token GT");
-			return sf.newSymbol("GT",sym.GT,yyline);
+"false"          {	if(debug) System.out.println("token FALSE");
+			return sf.newSymbol("FALSE",sym.FALSE,yyline);
 			}
 ","             {	if(debug) System.out.println("token COLOM");
 			return sf.newSymbol("COLOM",sym.COLOM,yyline);
 			}
-"="             {	if(debug) System.out.println("token ASSIGN");
-			return sf.newSymbol("ASSIGN",sym.ASSIGN,yyline);
+"="             {	if(debug) System.out.println("token EQUAL");
+			return sf.newSymbol("EQUAL",sym.EQUAL,yyline);
+			}
+"!="             {	if(debug) System.out.println("token NOT_EQUAL");
+			return sf.newSymbol("NOT_EQUAL",sym.NOT_EQUAL,yyline);
 			}
 ";"             {	if(debug) System.out.println("token SEMI");
 			return sf.newSymbol("SEMI",sym.SEMI,yyline);
@@ -98,6 +104,9 @@ espacio		= [ \t]+
 "*"             {	if(debug) System.out.println("token ALL");
 			return sf.newSymbol("ALL",sym.ALL,yyline);
 			}
+"\""          {	if(debug) System.out.println("token QUOTES");
+			return sf.newSymbol("QUOTES",sym.QUOTES,yyline);
+			}			
 {numero}        {	if(debug) System.out.println("token NUM");
 			return sf.newSymbol("NUM",sym.NUM,new String(yytext()));
 			}

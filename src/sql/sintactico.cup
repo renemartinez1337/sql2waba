@@ -5,7 +5,7 @@ import ast.*;
 
 parser code {:
 
-private boolean errores=false;
+private boolean errores=true;
 
 /***********
 SymbolFactory es una nueva caracteristica que ha sido a�adida a las version 11a de cup, la cual facilita la implementacion de clases Symbol personalizadas
@@ -104,38 +104,33 @@ action code {:
 :}
 
 /* Simbolos Terminales */
-terminal String ID;
-terminal String NUM;
-terminal TRUE;
-terminal FALSE;
-terminal EQ;
-terminal LE;
-terminal GE;
-terminal LT;
-terminal GT;
-terminal DIFF;
+terminal SELECT;
+terminal FROM;
+terminal WHERE; 
+terminal JOIN;
+terminal ON;
 terminal AND;
 terminal OR;
-terminal PLUS;
-terminal MINUS;
-terminal TIMES;
-terminal OVER;
-terminal LPAREN;
-terminal RPAREN;
 terminal COLOM;
+terminal EQUAL;
+terminal NOT_EQUAL;
 terminal SEMI;
-
+terminal DOT;
+terminal ALL;
+terminal QUOTES;
+terminal String NUM;
+terminal String ID;
+terminal TRUE;
+terminal FALSE;
 
 /* Simbolos No Terminales */
 non terminal program;
+non terminal NodoBase select_stmt;
 non terminal NodoBase stmt_seq;
-non terminal NodoBase stmt;
+non terminal NodoBase where;
 non terminal NodoBase param_list;
-non terminal NodoBase assign_stmt;
 non terminal NodoBase exp_seq;
 non terminal NodoBase exp;
-non terminal NodoBase simple_exp;
-non terminal NodoBase term;
 non terminal NodoBase factor;
 
 
@@ -145,14 +140,14 @@ non terminal NodoBase factor;
 program     ::= stmt_seq:script 
 					{: 
                                 	
-                	if(debug) System.out.println("\t regla INICIAR PROGRAMA"); 												                           
+                	if(debug) System.out.println("\t regla INICIAR SQL"); 												                           
 						ast = script;
 					:}
 ;
 
 
 
-stmt_seq    ::= stmt_seq:ini  stmt:sent	{: if(debug) System.out.println("\t regla secuencia de sentencias"); 
+stmt_seq    ::= stmt_seq:ini select_stmt:sent	{: if(debug) System.out.println("\t regla secuencia de sentencias"); 
 						
 						NodoBase hijoActual = ini;
 						if(hijoActual !=null){
@@ -170,76 +165,48 @@ stmt_seq    ::= stmt_seq:ini  stmt:sent	{: if(debug) System.out.println("\t regl
 						}
 			:}
 
-            | stmt:sent	{: 
+            | select_stmt:sent	SEMI {: 
             			
-            			if(debug) System.out.println("\t regla secuencia de sentencias"); 
+            			if(debug) System.out.println("\t regla sentencia de select"); 
 						RESULT=sent;				
 			:}
 
 ;
 
 
-stmt        ::= select_seq:sseq	
+//select * from employees JOIN departamento ON employee.departamento=departamento.id where employee_id = 1;
+
+
+select_stmt        ::= SELECT param_list:c FROM ID:tabla where:w
 				{: 
 					if(debug) 
-						System.out.println("\t regla sentencia"); 
+						System.out.println("\t regla select"); 
 					
-					RESULT = sseq;
+					//RESULT = new Select(c, w);
 				:}
-            
-            
-            | error	
-            	{: 
-            		if(debug) 
-            			System.out.println("\t Error en sentencia"); 
-										
-					RESULT=null;
-				:}
-;
 
-select_seq    ::= select_seq:sseq  select_stmt:select	{: if(debug) System.out.println("\t regla secuencia de select"); 
-						
-						NodoBase hijoActual = ini;
-						if(hijoActual !=null){
-							
-							while(hijoActual.TieneHermano()){
-								hijoActual = hijoActual.getHermanoDerecha();
-							}
-							
-							hijoActual.setHermanoDerecha(select);
-							RESULT=sseq;
-						}
-						else{
-							
-							RESULT=select;
-						}
-			:}
+			|
 
-            | select_stmt:select	{: 
-            			
-            			if(debug) System.out.println("\t regla secuencia de select"); 
-						RESULT=select;				
-			:}
-
-;
-
-
-select_stmt        ::= SELECT select_cols:c FROM ID:tabla where:w order_by:o
+				SELECT param_list:columnas FROM ID:tabla JOIN ID:tabla2 ON ID:tablaJoin DOT ID:columna1 EQUAL ID:tabla2Join DOT ID:columna2 where:w
 				{: 
 					if(debug) 
-						System.out.println("\t regla sentencia"); 
+						System.out.println("\t regla select con join de 1 tabla"); 
 					
-					RESULT = sseq;
+					//RESULT = new Select();
 				:}
-            
-            
-            | error	
-            	{: 
-            		if(debug) 
-            			System.out.println("\t Error en select"); 
-										
-					RESULT=null;
+
+			|
+
+				SELECT param_list:columnas FROM ID:tabla JOIN ID:tabla2 ON ID:tabla DOT ID:columna1 EQUAL ID:tabla2 DOT ID:columna2 JOIN ID:tabla3 ON ID:tabla DOT ID:columna3 EQUAL ID:tabla3 DOT ID:columna4 where:w
+				{: 
+					if(debug) 
+						System.out.println("\t regla select con join de 2 tablas"); 
+					
+					//RESULT = new Select();
 				:}
+
+            
+           
 ;
 
 where ::=
@@ -250,16 +217,11 @@ where ::=
 										
 					RESULT=null;
 				:}
-      | error {: 
-            		if(debug) 
-            			System.out.println("\t Error en where"); 
-										
-					RESULT=null;
-				:}
+     
       ;
 
 
-param_list		::= param_list:paramlist COLOM exp_seq:exp
+param_list		::= param_list:paramlist COLOM ID:col
 						{: 
 								    
 							NodoBase hijoActual = paramlist;
@@ -273,17 +235,22 @@ param_list		::= param_list:paramlist COLOM exp_seq:exp
 
 							}
 							else{
-								RESULT=exp;
+								RESULT=col;
 							}
 
 						:}
 							
 					| 
 
-					exp_seq:exp 
+					ID:col
 						{:
-						    RESULT=exp;
+						    RESULT=col;
 						:}
+					|
+
+					ALL:todo {:
+						RESULT = todo;
+					:}
 						
 					
 ;
@@ -294,7 +261,7 @@ exp_seq		::= exp_seq:exI OR exp:exD
 					if(debug) 
 						System.out.println("\t regla or");
 				 	
-				 	RESULT = new NodoOperacion(exI,tipoOp.or,exD);				
+				 	//RESULT = new NodoOperacion(exI,tipoOp.or,exD);				
 				:}
 
 			| exp_seq:exI AND exp:exD 
@@ -302,132 +269,42 @@ exp_seq		::= exp_seq:exI OR exp:exD
 					if(debug) 
 						System.out.println("\t regla and");
 						
-					RESULT = new NodoOperacion(exI,tipoOp.and,exD);					
+					//RESULT = new NodoOperacion(exI,tipoOp.and,exD);					
 				:}
 
 			| exp:sd 
 				{:
-				    RESULT=sd;
+				    //RESULT=sd;
 				:}
 ;
 
-exp ::= 		exp:exI GT simple_exp:exD	
-                    {: 
-                    	if(debug) 
-                			System.out.println("\t regla mayor que"); 
-                     	RESULT = new NodoOperacion(exI,tipoOp.mayor,exD);
-                    :} 
-                
-                | exp:exI LT simple_exp:exD	
-                    {: 
-                    	if(debug) 
-                    		System.out.println("\t regla menor que"); 
-                     	
-                     	RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
-                    :}
-                
-                | exp:exI LE simple_exp:exD	
-                    {: 
-                    	if(debug) 
-                    		System.out.println("\t regla menor o igual"); 
-                     	
-                     	RESULT = new NodoOperacion(exI,tipoOp.menorigual,exD);
-                    :}
-                
-                | exp:exI GE simple_exp:exD	
-                    {: 
-                    	if(debug) 
-                    		System.out.println("\t regla mayor o igual"); 
-                    	
-                    	RESULT = new NodoOperacion(exI,tipoOp.mayorigual,exD);
-                    :}
-                
-                | exp:exI EQ simple_exp:exD	
+exp ::= 	 	exp:exI EQUAL factor:exD	
                     {: 
                     	if(debug) 
                     		System.out.println("\t regla igual"); 
                         
-                        RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+                        //RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
                     :}
                 
-                | exp:exI DIFF simple_exp:exD	
+                | exp:exI NOT_EQUAL factor:exD	
                     {: 
                     	if(debug) 
                     		System.out.println("\t regla diferente"); 
                         
-                        RESULT = new NodoOperacion(exI,tipoOp.diferente,exD);
+                        //RESULT = new NodoOperacion(exI,tipoOp.diferente,exD);
                     :}
 
-                | simple_exp:exI 	
+                | factor:fac 	
                     {: 
                     	if(debug) 
                     		System.out.println("\t regla diferente"); 
                         
-                        RESULT = exI;
+                        //RESULT = exI;
                     :}
                                 
 ;
 
-
-simple_exp  ::= simple_exp:exI PLUS term:exD	
-					{: 
-						if(debug) 
-							System.out.println("\t regla suma"); 
-						
-						RESULT = new NodoOperacion(exI,tipoOp.mas,exD);
-					:}
-
-				| simple_exp:exI MINUS term:exD	
-					{: 
-						if(debug) 
-							System.out.println("\t regla resta"); 
-						
-						RESULT = new NodoOperacion(exI,tipoOp.menos,exD);
-					:}
-
-				| term:ex	
-					{:
-			 			if(debug) 
-			 				System.out.println("\t regla expresion"); 
-
-						RESULT=ex;
-					:}
-;
-
-term        ::= term:exI TIMES factor:exD	
-				{: 
-					if(debug) 
-						System.out.println("\t regla multiplicacion"); 
-					
-					RESULT = new NodoOperacion(exI,tipoOp.por,exD);
-				:}
-			| term:exI OVER factor:exD	
-				{: 
-					if(debug) 
-						System.out.println("\t regla division"); 
-					
-					RESULT = new NodoOperacion(exI,tipoOp.entre,exD);
-				:}
-			| factor:exD	
-				{: 
-					if(debug) 
-						System.out.println("\t regla factor"); 
-					
-					RESULT = exD;
-				:}
-;
-
-
-factor  ::= LPAREN exp_seq:ex RPAREN	
-			{:
-			 	if(debug) 
-			 		System.out.println("\t regla factor con parentesis"); 
-				
-				RESULT = ex;
-			:}
-
-
-		| NUM:valor	
+factor  ::= NUM:valor	
 			{: 
 				if(debug) 
 					System.out.println("\t regla es un numero"); 
@@ -452,8 +329,19 @@ factor  ::= LPAREN exp_seq:ex RPAREN
 					RESULT = null;
 					System.out.println("Ocurrio error en cup # 0005");
 				}
-			:} 
-
+			:}
+		| QUOTES ID:nombre QUOTES 
+			{: 
+				if(debug) System.out.println("\t regla es un ID entre QUOTES"); 
+				
+				if(variable != null){
+						RESULT= new NodoIdentificador(nombre.toString());		
+				}
+				else{
+					RESULT = null;
+					System.out.println("Ocurrio error en cup # 0005");
+				}
+			:}
 		|
 		TRUE	
 			{: 

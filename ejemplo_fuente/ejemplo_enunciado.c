@@ -1,17 +1,3 @@
-int asd(){
-
-	puts(2);
-
-	return 1;
-}
-
-void main()
-{
-
-  	
-  	int sd;
-	
-	gets(sd);
-   asd();
-
-}
+select * from employees where employee_id = 1;
+select ciudades from pais where pais.nombre <> "venezuela";
+select * from employees JOIN departamento ON employee.departamento=departamento.id where employee_id = 1;
