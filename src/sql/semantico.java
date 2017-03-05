@@ -23,29 +23,21 @@ public class semantico {
 	}
 
 	public void cargarTabla(NodoBase raiz){
-		while (raiz != null) {
+		/*
+            while (raiz != null) {
 		 
 			
 			if(verifd)// verifico variables declaradas
 			 if ((raiz instanceof NodoIdentificador) ){
 				 getDireccion(((NodoIdentificador) raiz).getNombre());
-			 }	
-
-
-			 	
-		    /* Hago el recorrido recursivo */
-		    
-			
+			 }				 
+		    			
 		    if (raiz instanceof NodoBloqueDec){
 		    	cargarTabla(((NodoBloqueDec)raiz).getVariable());
 		    }
-		    /*  if (raiz instanceof NodoIdentificador){
-		    	BuscarIdentificador(raiz,87,((NodoIdentificador) raiz).getTipo());
-	    		}
-		    }*/
+		    
 		    if (raiz instanceof NodoDeclaracion){
 		    	
-		    	//cargarTabla(((NodoDeclaracion)raiz).getVariable());
 		    	
 		    	if(!verifd)
 		    		BuscarIdentificador(((NodoDeclaracion) raiz).getVariable(),((NodoDeclaracion) raiz).getnumlinea(),((NodoDeclaracion) raiz).getTipo());
@@ -114,7 +106,7 @@ public class semantico {
 			 
 		  }
 		
-		
+		*/
 		
 
 		

@@ -23,27 +23,16 @@ public class TablaSimbolos {
 	}
 
 	public void cargarTabla(NodoBase raiz){
-		while (raiz != null) {
-		 
+            /*
+		while (raiz != null) {		 					
+                    if((raiz instanceof NodoIdentificador) ){
+                       getDireccion(((NodoIdentificador) raiz).getNombre());				 
+                    }				    
 			
-			
-			 if ((raiz instanceof NodoIdentificador) ){
-				 
-				 if(!((NodoIdentificador)raiz).getfuncion())
-					 getDireccion(((NodoIdentificador) raiz).getNombre());
-				 
-			 }	
-			 	
-		    /* Hago el recorrido recursivo */
-		    
-			
-		    if (raiz instanceof NodoBloqueDec){
-		    	cargarTabla(((NodoBloqueDec)raiz).getVariable());
+		    if (raiz instanceof NodoSelect){
+		    	cargarTabla(((NodoSelect)raiz).getVariable());
 		    }
-		    /*  if (raiz instanceof NodoIdentificador){
-		    	BuscarIdentificador(raiz,87,((NodoIdentificador) raiz).getTipo());
-	    		}
-		    }*/
+		    
 		    if (raiz instanceof NodoDeclaracion){
 		    	
 		    	 
@@ -52,8 +41,7 @@ public class TablaSimbolos {
 	 
 		    	if(((NodoDeclaracion)raiz).getexpresionasignacion()!=null)
 		    	cargarTabla(((NodoDeclaracion)raiz).getexpresionasignacion());
-		    	
-		    	
+		    			    	
 		    }
 		    
 		    
@@ -121,7 +109,7 @@ public class TablaSimbolos {
 		  }
 		
 
-		
+		*/
 	}
 	
 	//true es nuevo no existe se insertara, false ya existe NO se vuelve a insertar 

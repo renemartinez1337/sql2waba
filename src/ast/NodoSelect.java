@@ -1,57 +1,66 @@
 package ast;
 
 public class NodoSelect extends NodoBase {
-	private String nombre;
-	private String tipo;
-	private NodoBase Argumentos;
-	private boolean funcion=false;
-	   
-	public NodoIdentificador(String nombre, NodoBase Argumentos) {
+	private NodoBase columnas;
+	private NodoBase from;
+	private NodoBase join;
+	private NodoBase join2;
+	private NodoBase where;
+	
+	public NodoSelect(){
 		super();
-		this.nombre = nombre;
-		this.Argumentos = Argumentos;
+		this.columnas = null;
+		this.from = null;
+		this.join = null;
+		this.join2 = null;
+		this.where = null;		
 	}
 	
-	public NodoIdentificador(String nombre, NodoBase Argumentos, String tipo) {
+	public NodoSelect(NodoBase columnas, NodoBase from, NodoBase where){
 		super();
-		this.nombre = nombre;
-		this.Argumentos = Argumentos;
-		this.tipo = tipo;
+		this.columnas = columnas;
+		this.from = from;
+		this.join = null;
+		this.join2 = null;
+		this.where = where;
 	}
 
-	public NodoIdentificador(String nombre, String tipo) {
+	public NodoSelect(NodoBase columnas, NodoBase from, NodoBase join, NodoBase where){
 		super();
-		this.nombre = nombre;
-	}
-
-   	public NodoIdentificador(String nombre) {
+		this.columnas = columnas;
+		this.from = from;
+		this.join = join;
+		this.join2 = null;
+		this.where = where;
+	}	
+	
+	public NodoSelect(NodoBase columnas, NodoBase from, NodoBase join, NodoBase join2, NodoBase where){
 		super();
-		this.nombre = nombre;
+		this.columnas = columnas;
+		this.from = from;
+		this.join = join;
+		this.join2 = join2;
+		this.where = where;
 	}
 
-	public NodoIdentificador(String nombre,boolean funcion) {
-		super();
-		this.nombre = nombre;
-		this.funcion=funcion;
+	public NodoBase getColumnas(){
+		return columnas;
 	}
 
-	public NodoIdentificador() {
-		super();
+	public NodoBase getFrom(){
+		return from;
 	}
 
-	public NodoBase getArgumentos() {
-		return Argumentos;
+	public NodoBase getJoin(){		
+		return join;
 	}
 
-
-	public String getNombre() {
-		return nombre;
-	}
-	public boolean getfuncion() {
-		return funcion;
-	}
-        public String getTipo() {
-		return tipo;
-	}
-
+	public NodoBase getJoin2(){		
+		return join2;
+	}	
+	
+	public NodoBase getWhere(){		
+		return where;
+	}	
 }
+

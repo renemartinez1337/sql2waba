@@ -1,3 +1,1 @@
-select * from employees where employee_id = 1;
-select ciudades from pais where pais.nombre <> "venezuela";
-select * from employees JOIN departamento ON employee.departamento=departamento.id where employee_id = 1;
+select pais, nombre from employees join tiempo on employee.id = tiempo.id join temporal on employee.tam = temporal.prueba where employee_id = 1;

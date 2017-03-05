@@ -53,8 +53,8 @@ public class Generador {
 		System.out.println();
 		System.out.println();
                 
-		generarPreludioEstandar();
-		generar(raiz);
+//		generarPreludioEstandar();
+//		generar(raiz);
 	
 		/*Genero el codigo de finalizacion de ejecucion del codigo*/   
 		UtGen.emitirComentario("Fin de la ejecucion.");
@@ -69,7 +69,7 @@ public class Generador {
 	
 	//Funcion principal de generacion de codigo
 	//prerequisito: Fijar la tabla de simbolos antes de generar el codigo objeto 
-	private static void generar(NodoBase nodo) throws IOException{
+	/*private static void generar(NodoBase nodo) throws IOException{
 	
             if(tablaSimbolos!=null){
 		if (nodo instanceof  NodoProgram )
@@ -102,7 +102,7 @@ public class Generador {
 	    	System.out.println("BUG: Tipo de nodo a generar desconocido");
 			    	 
 		
-		/*Si el hijo de extrema izquierda tiene hermano a la derecha lo genero tambien*/
+		/*Si el hijo de extrema izquierda tiene hermano a la derecha lo genero tambien
 		if(nodo.TieneHermano())
 			generar(nodo.getHermanoDerecha());
 		
@@ -139,7 +139,7 @@ public class Generador {
     	NodoIf n = (NodoIf)nodo;
 		int localidadSaltoElse,localidadSaltoEnd,localidadActual;
 		if(UtGen.debug)	UtGen.emitirComentario("-> if");
-		/*Genero el codigo para la parte de prueba del IF*/
+		/*Genero el codigo para la parte de prueba del IF
 		generar(n.getPrueba());
 		localidadSaltoElse = UtGen.emitirSalto(1);
 		UtGen.emitirComentario("If: el salto hacia el else debe estar aqui");//Genero la parte THEN
@@ -150,7 +150,7 @@ public class Generador {
 		UtGen.cargarRespaldo(localidadSaltoElse);
 		UtGen.emitirRM_Abs("JEQ", UtGen.AC, localidadActual, "if: jmp hacia else");
 		UtGen.restaurarRespaldo();
-		/*Genero la parte ELSE*/
+		/*Genero la parte ELSE
 		if(n.getParteElse()!=null){
 			generar(n.getParteElse());
 		}	
@@ -271,14 +271,14 @@ private static void generarValor(NodoBase nodo) throws IOException{
 	private static void generarWhile(NodoBase nodo) throws IOException{ 
     	NodoWhile n = (NodoWhile)nodo;
 		int localidadSaltoInicio,localidadSaltoCondicional,localidadActual;
-		/* Genero el codigo de la prueba del while */
+		/* Genero el codigo de la prueba del while 
 		if(UtGen.debug)	UtGen.emitirComentario("-> while");
 		localidadSaltoInicio = UtGen.emitirSalto(0);
 		UtGen.emitirComentario("while: aqui deberia ir el marcado del inicio del while");
 		generar(n.getPrueba());
 		localidadSaltoCondicional = UtGen.emitirSalto(1);
 		if(UtGen.debug)	UtGen.emitirComentario("-> cuerpo while");
-		/* Genero el cuerpo del while */
+		/* Genero el cuerpo del while 
 		generar(n.getCuerpo());
 		//Salto al Inicio del while
 		UtGen.emitirRM_Abs("LDA", UtGen.PC, localidadSaltoInicio, "if: jmp hacia el final");
@@ -340,7 +340,7 @@ private static void generarValor(NodoBase nodo) throws IOException{
 		generar(nodof.getCuerpo());
 		generar(nodof.getProporcion());
 		UtGen.emitirRM_Abs("JNE", UtGen.AC, localidadSaltoInicio, "for: jmp hacia el inicio del cuerpo");
-		*/
+		
 		if (UtGen.debug)
 			UtGen.emitirComentario("<- for");
 
@@ -351,10 +351,10 @@ private static void generarValor(NodoBase nodo) throws IOException{
 		NodoAsignacion n = (NodoAsignacion)nodo;
 		int direccion;
 		if(UtGen.debug)	UtGen.emitirComentario("-> asignacion");		
-		/* Genero el codigo para la expresion a la derecha de la asignacion */
+		/* Genero el codigo para la expresion a la derecha de la asignacion 
                 
 		generar(n.getExpresion());
-		/* Ahora almaceno el valor resultante */
+		/* Ahora almaceno el valor resultante 
 		direccion = tablaSimbolos.getDireccion(n.getIdentificador());
 		UtGen.emitirRM("ST", UtGen.AC, direccion, UtGen.GP, "asignacion: almaceno el valor para el id "+n.getIdentificador());
 		if(UtGen.debug)	UtGen.emitirComentario("<- asignacion");
@@ -373,9 +373,9 @@ private static void generarValor(NodoBase nodo) throws IOException{
 	private static void generarEscribir(NodoBase nodo) throws IOException{
 		NodoEscribir n = (NodoEscribir)nodo;
 		if(UtGen.debug)	UtGen.emitirComentario("-> escribir");
-		/* Genero el codigo de la expresion que va a ser escrita en pantalla */
+		/* Genero el codigo de la expresion que va a ser escrita en pantalla 
 		generar(n.getExpresion());
-		/* Ahora genero la salida */
+		/* Ahora genero la salida 
 		UtGen.emitirRO("OUT", UtGen.AC, 0, 0, "escribir: genero la salida de la expresion"+n.getExpresion());
 		if(UtGen.debug)	UtGen.emitirComentario("<- escribir");
 	}
@@ -394,13 +394,13 @@ private static void generarValor(NodoBase nodo) throws IOException{
 	private static void generarOperacion(NodoBase nodo) throws IOException{
 		NodoOperacion n = (NodoOperacion) nodo;
 		if(UtGen.debug)	UtGen.emitirComentario("-> Operacion: " + n.getOperacion());
-		/* Genero la expresion izquierda de la operacion */
+		/* Genero la expresion izquierda de la operacion 
 		generar(n.getOpIzquierdo());
-		/* Almaceno en la pseudo pila de valor temporales el valor de la operacion izquierda */
+		/* Almaceno en la pseudo pila de valor temporales el valor de la operacion izquierda 
 		UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "op: push en la pila tmp el resultado expresion izquierda");
-		/* Genero la expresion derecha de la operacion */
+		/* Genero la expresion derecha de la operacion 
 		generar(n.getOpDerecho());
-		/* Ahora cargo/saco de la pila el valor izquierdo */
+		/* Ahora cargo/saco de la pila el valor izquierdo 
 		UtGen.emitirRM("LD", UtGen.AC1, ++desplazamientoTmp, UtGen.MP, "op: pop o cargo de la pila el valor izquierdo en AC1");
 		switch(n.getOperacion()){
 		 case or:
@@ -475,10 +475,10 @@ private static void generarValor(NodoBase nodo) throws IOException{
 		UtGen.emitirComentario("Compilacion TINY para el codigo objeto TM");
 		UtGen.emitirComentario("Archivo: "+ "MiniC_Tiny.tm");
 		/*Genero inicializaciones del preludio estandar*/
-		/*Todos los registros en tiny comienzan en cero*/
+		/*Todos los registros en tiny comienzan en cero
 		UtGen.emitirComentario("Preludio estandar:");
 		UtGen.emitirRM("LD", UtGen.MP, 0, UtGen.AC, "cargar la maxima direccion desde la localidad 0");
 		UtGen.emitirRM("ST", UtGen.AC, 0, UtGen.AC, "limpio el registro de la localidad 0");
 	}
-
+*/
 }

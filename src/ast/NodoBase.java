@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.ArrayList;
+
 public class NodoBase {
 	/*Esta clase fue creada para tener un origen comun de todas las clases...
 	 * 
@@ -7,11 +9,11 @@ public class NodoBase {
 	 * DIDACTICA EN CLASE, SE LLEVARA A CABO DE FORMA MUY SIMPLE Y POCO FLEXIBLE
 	 * */
 	
-	private NodoBase HermanoDerecha;
+	private NodoBase HermanoDerecha;                
 
 	public NodoBase(NodoBase hermanoDerecha) {
 		super();
-		HermanoDerecha = hermanoDerecha;
+		HermanoDerecha = hermanoDerecha;                                
 	}
 
 	public NodoBase() {
